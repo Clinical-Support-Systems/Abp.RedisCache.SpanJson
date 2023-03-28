@@ -29,7 +29,7 @@ namespace Abp.RedisCache.SpanJson.Tests
 
             public int Age { get; set; }
 
-            public string Name { get; set; }
+            public string? Name { get; set; }
 
             public DateTime DOB { get; set; }
         }
@@ -39,7 +39,7 @@ namespace Abp.RedisCache.SpanJson.Tests
         {
             //Arrange
             var spanJsonSerailizer = new SpanJsonRedisCacheSerializer();
-            var objectToSerialize = new ClassToSerialize { Age = 10, Name = "John", DOB = DateTime.Now };
+            var objectToSerialize = new ClassToSerialize { Age = 10, Name = Guid.NewGuid().ToString(), DOB = DateTime.Now };
 
             //Act
             string classSerializedString = spanJsonSerailizer.Serialize(

@@ -3,25 +3,16 @@ using SpanJson.Resolvers;
 using StackExchange.Redis;
 using System;
 using System.Buffers;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Abp.Runtime.Caching.Redis
 {
-    /// <summary>
-    /// Redis implementation of SpanJson
-    /// </summary>
+    /// <inheritdoc />
     public class SpanJsonRedisCacheSerializer : DefaultRedisCacheSerializer
     {
         private const string SpanJsonPrefix = "SJ^";
         private const string TypeSeperator = "|";
 
-        /// <summary>
-        /// Creates an instance of the object from its serialized string representation.
-        /// </summary>
-        /// <param name="objbyte">String representation of the object from the Redis server.</param>
-        /// <returns>Returns a newly constructed object.</returns>
-        /// <seealso cref="IRedisCacheSerializer{TSource,TDestination}.Serialize" />
+        /// <inheritdoc />
         public override object Deserialize(RedisValue objbyte)
         {
             string serializedObj = objbyte;
@@ -39,13 +30,7 @@ namespace Abp.Runtime.Caching.Redis
             return JsonSerializer.NonGeneric.Utf8.Deserialize(byteAfter64.AsSpan(), type);
         }
 
-        /// <summary>
-        ///     Produce a string representation of the supplied object.
-        /// </summary>
-        /// <param name="value">Instance to serialize.</param>
-        /// <param name="type">Type of the object.</param>
-        /// <returns>Returns a string representing the object instance that can be placed into the Redis cache.</returns>
-        /// <seealso cref="IRedisCacheSerializer{TSource,TDestination}.Deserialize" />
+        /// <inheritdoc />
         public override RedisValue Serialize(object value, Type type)
         {
             if (type is null)
