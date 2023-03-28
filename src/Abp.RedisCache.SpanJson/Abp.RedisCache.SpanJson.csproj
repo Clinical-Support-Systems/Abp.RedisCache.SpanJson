@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<AssemblyName>Abp.RedisCache.ProtoBuf</AssemblyName>
+		<PackageId>Abp.RedisCache.ProtoBuf</PackageId>
+		<PackageTags>asp.net;asp.net mvc;boilerplate;application framework;web framework;framework;domain driven design;Redis;Caching;Protobuf</PackageTags>
+		<GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+		<GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+		<GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+		<GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+		<RootNamespace>Abp</RootNamespace>
+		<Description>Abp.RedisCache.ProtoBuf</Description>
+		<AssemblyName>Abp.RedisCache.ProtoBuf</AssemblyName>
+		<PackageId>Abp.RedisCache.ProtoBuf</PackageId>
+		<PackageTags>asp.net;asp.net mvc;boilerplate;application framework;web framework;framework;domain driven design;Redis;Caching;Protobuf</PackageTags>
+		<GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+		<GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+		<GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+		<GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+		<RootNamespace>Abp</RootNamespace>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Abp.RedisCache" Version="8.1.0" />
+		<PackageReference Include="ConfigureAwait.Fody" Version="3.3.2" />
+		<PackageReference Include="DotNet.ReproducibleBuilds" Version="1.1.1">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="SpanJson" Version="4.0.0" />
+	</ItemGroup>
+
+</Project>
