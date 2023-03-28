@@ -49,6 +49,7 @@ namespace Acme.BookStore.Web.Startup
 
             Configuration.Caching.UseRedis(options =>
             {
+                // Use the new force Luke.
                 options.UseSpanJson();
             });
         }

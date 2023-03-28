@@ -25,6 +25,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		LICENSE = LICENSE
 		.github\workflows\main.yml = .github\workflows\main.yml
 		README.md = README.md
+		use.png = use.png
 		version.json = version.json
 	EndProjectSection
 EndProject
