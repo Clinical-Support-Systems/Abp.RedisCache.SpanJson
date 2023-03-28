@@ -1,20 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+		<TargetFramework>net7.0</TargetFramework>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
-		<AssemblyName>Abp.RedisCache.ProtoBuf</AssemblyName>
-		<PackageId>Abp.RedisCache.ProtoBuf</PackageId>
-		<PackageTags>asp.net;asp.net mvc;boilerplate;application framework;web framework;framework;domain driven design;Redis;Caching;Protobuf</PackageTags>
-		<GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
-		<GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
-		<GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-		<GeneratePackageOnBuild>False</GeneratePackageOnBuild>
-		<RootNamespace>Abp</RootNamespace>
-		<Description>Abp.RedisCache.ProtoBuf</Description>
-		<AssemblyName>Abp.RedisCache.ProtoBuf</AssemblyName>
-		<PackageId>Abp.RedisCache.ProtoBuf</PackageId>
-		<PackageTags>asp.net;asp.net mvc;boilerplate;application framework;web framework;framework;domain driven design;Redis;Caching;Protobuf</PackageTags>
+		<AssemblyName>Abp.RedisCache.SpanJson</AssemblyName>
+		<PackageId>CommunityAbp.RedisCache.SpanJson</PackageId>
+		<PackageTags>asp.net;asp.net mvc;boilerplate;application framework;web framework;framework;domain driven design;Redis;Caching;SpanJson</PackageTags>
 		<GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
 		<GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
 		<GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
@@ -24,7 +15,6 @@
 
 	<ItemGroup>
 		<PackageReference Include="Abp.RedisCache" Version="8.1.0" />
-		<PackageReference Include="ConfigureAwait.Fody" Version="3.3.2" />
 		<PackageReference Include="DotNet.ReproducibleBuilds" Version="1.1.1">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

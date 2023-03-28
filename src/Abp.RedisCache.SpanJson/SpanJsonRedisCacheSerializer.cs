@@ -2,7 +2,6 @@
 using StackExchange.Redis;
 using System;
 using System.Buffers;
-using System.Reflection;
 
 namespace Abp.Runtime.Caching.Redis
 {
@@ -11,8 +10,8 @@ namespace Abp.Runtime.Caching.Redis
     /// </summary>
     public class SpanJsonRedisCacheSerializer : DefaultRedisCacheSerializer
     {
-        private const string TypeSeperator = "|";
         private const string SpanJsonPrefix = "SJ^";
+        private const string TypeSeperator = "|";
 
         /// <summary>
         /// Creates an instance of the object from its serialized string representation.
@@ -28,10 +27,10 @@ namespace Abp.Runtime.Caching.Redis
                 return base.Deserialize(objbyte);
             }
 
-            serializedObj = serializedObj.Substring(SpanJsonPrefix.Length);
+            serializedObj = serializedObj[SpanJsonPrefix.Length..];
             var typeSeperatorIndex = serializedObj.IndexOf(TypeSeperator, StringComparison.OrdinalIgnoreCase);
-            var type = Type.GetType(serializedObj.Substring(0, typeSeperatorIndex));
-            var serialized = serializedObj.Substring(typeSeperatorIndex + 1);
+            var type = Type.GetType(serializedObj[..typeSeperatorIndex]);
+            var serialized = serializedObj[(typeSeperatorIndex + 1)..];
             var byteAfter64 = Convert.FromBase64String(serialized);
 
             return JsonSerializer.NonGeneric.Utf8.Deserialize(byteAfter64.AsSpan(), type);
@@ -46,16 +45,12 @@ namespace Abp.Runtime.Caching.Redis
         /// <seealso cref="IRedisCacheSerializer{TSource,TDestination}.Deserialize" />
         public override RedisValue Serialize(object value, Type type)
         {
-            if (!type.GetTypeInfo().IsDefined(typeof(JsonConstructorAttribute), false))
-            {
-                return base.Serialize(value, type);
-            }
             var serialized = JsonSerializer.NonGeneric.Utf8.SerializeToArrayPool(value);
             try
             {
                 var minified = JsonSerializer.Minifier.Minify(serialized);
                 var serializedContent = Convert.ToBase64String(minified, 0, minified.Length);
-                return $"{SpanJsonPrefix}{type.AssemblyQualifiedName}{TypeSeperator}{serialized}";
+                return $"{SpanJsonPrefix}{type.AssemblyQualifiedName}{TypeSeperator}{serializedContent}";
             }
             finally
             {

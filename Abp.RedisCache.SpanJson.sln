@@ -5,6 +5,8 @@ VisualStudioVersion = 17.5.33516.290
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Abp.RedisCache.SpanJson", "src\Abp.RedisCache.SpanJson\Abp.RedisCache.SpanJson.csproj", "{EDE8A4FF-961D-4BE7-9490-CA1E8B1ED6B7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Abp.RedisCache.SpanJson.Tests", "tests\Abp.RedisCache.SpanJson.Tests\Abp.RedisCache.SpanJson.Tests.csproj", "{AAB144D0-B7FC-4D77-B85A-4B483B12F38B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{EDE8A4FF-961D-4BE7-9490-CA1E8B1ED6B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EDE8A4FF-961D-4BE7-9490-CA1E8B1ED6B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EDE8A4FF-961D-4BE7-9490-CA1E8B1ED6B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AAB144D0-B7FC-4D77-B85A-4B483B12F38B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AAB144D0-B7FC-4D77-B85A-4B483B12F38B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AAB144D0-B7FC-4D77-B85A-4B483B12F38B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AAB144D0-B7FC-4D77-B85A-4B483B12F38B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
