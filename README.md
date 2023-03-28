@@ -1,2 +1,3 @@
-# Abp.RedisCache.SpanJson
-ABP implementation of SpanJson on Redis						   
+# CommunityAbp.RedisCache.SpanJson
+
+An ABP Redis serialization/deserialization using [SpanJson](https://github.com/Tornhoof/SpanJson).
