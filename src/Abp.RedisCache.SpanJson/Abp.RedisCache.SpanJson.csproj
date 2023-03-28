@@ -4,14 +4,39 @@
 		<TargetFramework>net7.0</TargetFramework>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<AssemblyName>Abp.RedisCache.SpanJson</AssemblyName>
+		<LangVersion>latest</LangVersion>
 		<PackageId>CommunityAbp.RedisCache.SpanJson</PackageId>
 		<PackageTags>asp.net;asp.net mvc;boilerplate;application framework;web framework;framework;domain driven design;Redis;Caching;SpanJson</PackageTags>
 		<GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
 		<GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
 		<GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
 		<GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<Authors>Kori Francis</Authors>
+		<Company>Clinical Support Systems</Company>
+		<IncludeSymbols>true</IncludeSymbols>
+		<AnalysisMode>AllEnabledByDefault</AnalysisMode>
+		<AnalysisLevel>latest</AnalysisLevel>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<!--<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>-->
+		<EnableNETAnalyzers>true</EnableNETAnalyzers>
+		<Nullable>enable</Nullable>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 		<RootNamespace>Abp</RootNamespace>
+		<Description>Package to allow Abp to use SpanJson as the Redis serialization/deserialization backing implementation</Description>
+		<PackageProjectUrl>https://github.com/Clinical-Support-Systems/Abp.RedisCache.SpanJson</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/Clinical-Support-Systems/Abp.RedisCache.SpanJson</RepositoryUrl>
 	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="..\..\README.md" Link="README.md" Pack="true" PackagePath="\">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Abp.RedisCache" Version="8.1.0" />
@@ -19,7 +44,15 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
+		<PackageReference Include="Nerdbank.GitVersioning" Version="3.5.119">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 		<PackageReference Include="SpanJson" Version="4.0.0" />
 	</ItemGroup>
+
+	<PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+		<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+	</PropertyGroup>
 
 </Project>

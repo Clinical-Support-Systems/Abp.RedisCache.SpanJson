@@ -15,6 +15,8 @@ public static class AbpRedisCacheOptionsExtensions
     /// <param name="options"></param>
     public static void UseSpanJson(this AbpRedisCacheOptions options)
     {
+        ArgumentNullException.ThrowIfNull(options);
+
         options.AbpStartupConfiguration
             .ReplaceService<IRedisCacheSerializer, SpanJsonRedisCacheSerializer>(DependencyLifeStyle.Transient);
     }

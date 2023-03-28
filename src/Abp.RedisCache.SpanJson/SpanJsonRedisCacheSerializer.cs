@@ -25,7 +25,7 @@ namespace Abp.Runtime.Caching.Redis
         public override object Deserialize(RedisValue objbyte)
         {
             string serializedObj = objbyte;
-            if (!serializedObj.StartsWith(SpanJsonPrefix))
+            if (!serializedObj.StartsWith(SpanJsonPrefix, StringComparison.OrdinalIgnoreCase))
             {
                 return base.Deserialize(objbyte);
             }
@@ -48,6 +48,11 @@ namespace Abp.Runtime.Caching.Redis
         /// <seealso cref="IRedisCacheSerializer{TSource,TDestination}.Deserialize" />
         public override RedisValue Serialize(object value, Type type)
         {
+            if (type is null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+
             var serialized = JsonSerializer.NonGeneric.Utf8.SerializeToArrayPool<IncludeNullsOriginalCaseResolver<byte>>(value);
             try
             {
@@ -57,7 +62,8 @@ namespace Abp.Runtime.Caching.Redis
             }
             finally
             {
-                ArrayPool<byte>.Shared.Return(serialized.Array);
+                if (serialized.Array != null)
+                    ArrayPool<byte>.Shared.Return(serialized.Array);
             }
         }
     }
