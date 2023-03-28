@@ -1,11 +1,16 @@
 using Abp.Runtime.Caching.Redis;
 using Shouldly;
 using SpanJson;
+using Xunit.Abstractions;
 
 namespace Abp.RedisCache.SpanJson.Tests
 {
     public class SpanJsonRedisCacheSerializer_Test : TestBaseWithLocalIocManager
     {
+        public SpanJsonRedisCacheSerializer_Test(ITestOutputHelper output) : base(output)
+        {
+        }
+
         public class ClassToSerialize
         {
             [JsonConstructor(nameof(Age), nameof(Name), nameof(DOB))]
@@ -42,13 +47,16 @@ namespace Abp.RedisCache.SpanJson.Tests
                 typeof(ClassToSerialize)
             );
 
+            Output.WriteLine(classSerializedString);
+
             object classUnSerialized = spanJsonSerailizer.Deserialize(classSerializedString);
 
             //Assert
             classUnSerialized.ShouldBeOfType<ClassToSerialize>();
             ClassToSerialize classUnSerializedTyped = (ClassToSerialize)classUnSerialized;
-            classUnSerializedTyped.Age.ShouldBe(10);
-            classUnSerializedTyped.Name.ShouldBe("John");
+            classUnSerializedTyped.Age.ShouldBe(objectToSerialize.Age);
+            classUnSerializedTyped.Name.ShouldBe(objectToSerialize.Name);
+            classUnSerializedTyped.DOB.ShouldBe(objectToSerialize.DOB);
         }
     }
 }

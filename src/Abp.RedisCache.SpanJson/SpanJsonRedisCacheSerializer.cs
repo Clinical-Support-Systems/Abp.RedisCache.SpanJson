@@ -1,7 +1,10 @@
 ﻿using SpanJson;
+using SpanJson.Resolvers;
 using StackExchange.Redis;
 using System;
 using System.Buffers;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Abp.Runtime.Caching.Redis
 {
@@ -45,7 +48,7 @@ namespace Abp.Runtime.Caching.Redis
         /// <seealso cref="IRedisCacheSerializer{TSource,TDestination}.Deserialize" />
         public override RedisValue Serialize(object value, Type type)
         {
-            var serialized = JsonSerializer.NonGeneric.Utf8.SerializeToArrayPool(value);
+            var serialized = JsonSerializer.NonGeneric.Utf8.SerializeToArrayPool<IncludeNullsOriginalCaseResolver<byte>>(value);
             try
             {
                 var minified = JsonSerializer.Minifier.Minify(serialized);
