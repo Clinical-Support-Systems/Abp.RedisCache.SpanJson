@@ -16,6 +16,7 @@ namespace Abp.Runtime.Caching.Redis
         public override object Deserialize(RedisValue objbyte)
         {
             string serializedObj = objbyte;
+
             if (!serializedObj.StartsWith(SpanJsonPrefix, StringComparison.OrdinalIgnoreCase))
             {
                 return base.Deserialize(objbyte);
@@ -28,6 +29,7 @@ namespace Abp.Runtime.Caching.Redis
             var byteAfter64 = Convert.FromBase64String(serialized);
 
             return JsonSerializer.NonGeneric.Utf8.Deserialize(byteAfter64.AsSpan(), type);
+
         }
 
         /// <inheritdoc />
@@ -38,17 +40,24 @@ namespace Abp.Runtime.Caching.Redis
                 throw new ArgumentNullException(nameof(type));
             }
 
-            var serialized = JsonSerializer.NonGeneric.Utf8.SerializeToArrayPool<IncludeNullsOriginalCaseResolver<byte>>(value);
             try
             {
-                var minified = JsonSerializer.Minifier.Minify(serialized);
-                var serializedContent = Convert.ToBase64String(minified, 0, minified.Length);
-                return $"{SpanJsonPrefix}{type.AssemblyQualifiedName}{TypeSeperator}{serializedContent}";
+                var serialized = JsonSerializer.NonGeneric.Utf8.SerializeToArrayPool<IncludeNullsOriginalCaseResolver<byte>>(value);
+                try
+                {
+                    var minified = JsonSerializer.Minifier.Minify(serialized);
+                    var serializedContent = Convert.ToBase64String(minified, 0, minified.Length);
+                    return $"{SpanJsonPrefix}{type.AssemblyQualifiedName}{TypeSeperator}{serializedContent}";
+                }
+                finally
+                {
+                    if (serialized.Array != null)
+                        ArrayPool<byte>.Shared.Return(serialized.Array);
+                }
             }
-            finally
+            catch (TypeInitializationException) //type not supported by SpanJson
             {
-                if (serialized.Array != null)
-                    ArrayPool<byte>.Shared.Return(serialized.Array);
+                return base.Serialize(value, type);
             }
         }
     }
