@@ -42,7 +42,7 @@ namespace Abp.RedisCache.SpanJson.Tests
             var objectToSerialize = new ClassToSerialize { Age = 10, Name = Guid.NewGuid().ToString(), DOB = DateTime.Now };
 
             //Act
-            string classSerializedString = spanJsonSerailizer.Serialize(
+            var classSerializedString = spanJsonSerailizer.Serialize(
                 objectToSerialize,
                 typeof(ClassToSerialize)
             );

@@ -13,9 +13,19 @@ namespace Abp.Runtime.Caching.Redis
         private const string TypeSeperator = "|";
 
         /// <inheritdoc />
-        public override object Deserialize(RedisValue objbyte)
+        public override object? Deserialize(RedisValue objbyte)
         {
-            string serializedObj = objbyte;
+            if (objbyte.IsNullOrEmpty)
+            {
+                return null;
+            }
+
+            var serializedObj = (string?)objbyte;
+
+            if (serializedObj == null)
+            {
+                return null;
+            }
 
             if (!serializedObj.StartsWith(SpanJsonPrefix, StringComparison.OrdinalIgnoreCase))
             {
@@ -29,16 +39,12 @@ namespace Abp.Runtime.Caching.Redis
             var byteAfter64 = Convert.FromBase64String(serialized);
 
             return JsonSerializer.NonGeneric.Utf8.Deserialize(byteAfter64.AsSpan(), type);
-
         }
 
         /// <inheritdoc />
         public override RedisValue Serialize(object value, Type type)
         {
-            if (type is null)
-            {
-                throw new ArgumentNullException(nameof(type));
-            }
+            ArgumentNullException.ThrowIfNull(type);
 
             try
             {
@@ -47,7 +53,7 @@ namespace Abp.Runtime.Caching.Redis
                 {
                     var minified = JsonSerializer.Minifier.Minify(serialized);
                     var serializedContent = Convert.ToBase64String(minified, 0, minified.Length);
-                    return $"{SpanJsonPrefix}{type.AssemblyQualifiedName}{TypeSeperator}{serializedContent}";
+                    return SpanJsonPrefix + type.AssemblyQualifiedName + TypeSeperator + serializedContent;
                 }
                 finally
                 {
