@@ -1,24 +1,47 @@
-using System;
 using System.Text;
+using System.Text.Json;
 using Abp.Runtime.Caching.Redis;
 using Shouldly;
+using SpanJson;
 using StackExchange.Redis;
-using Xunit;
 using Xunit.Abstractions;
 
 namespace Abp.RedisCache.SpanJson.Tests
 {
-    public class SpanJsonRedisCacheSerializer_MoreTests : TestBaseWithLocalIocManager
+    public class SpanJsonRedisCacheSerializerTests : TestBaseWithLocalIocManager
     {
-        public SpanJsonRedisCacheSerializer_MoreTests(ITestOutputHelper output) : base(output)
+        public SpanJsonRedisCacheSerializerTests(ITestOutputHelper output) : base(output)
         {
         }
 
-        private sealed class Sample
+        [Fact]
+        public void Simple_Serialize_Deserialize_Test()
         {
-            public int Age { get; set; }
-            public string? Name { get; set; }
-            public DateTime DOB { get; set; }
+            //Arrange
+            var spanJsonSerailizer = new SpanJsonRedisCacheSerializer();
+            var objectToSerialize = new ClassToSerialize
+            {
+                Age = 10,
+                Name = Guid.NewGuid().ToString(),
+                DateOfBirth = DateTime.Now
+            };
+
+            //Act
+            var classSerializedString = spanJsonSerailizer.Serialize(
+                objectToSerialize,
+                typeof(ClassToSerialize)
+            );
+
+            Output.WriteLine(classSerializedString);
+
+            var classUnSerialized = spanJsonSerailizer.Deserialize(classSerializedString);
+
+            //Assert
+            classUnSerialized.ShouldBeOfType<ClassToSerialize>();
+            var classUnSerializedTyped = (ClassToSerialize)classUnSerialized;
+            classUnSerializedTyped.Age.ShouldBe(objectToSerialize.Age);
+            classUnSerializedTyped.Name.ShouldBe(objectToSerialize.Name);
+            classUnSerializedTyped.DateOfBirth.ShouldBe(objectToSerialize.DateOfBirth);
         }
 
         [Fact]
@@ -26,7 +49,12 @@ namespace Abp.RedisCache.SpanJson.Tests
         {
             // Arrange
             var serializer = new SpanJsonRedisCacheSerializer();
-            var obj = new Sample { Age = 1, Name = "A", DOB = DateTime.UnixEpoch };
+            var obj = new Sample
+            {
+                Age = 1,
+                Name = "A",
+                DateOfBirth = DateTime.UnixEpoch
+            };
 
             // Act + Assert
             Should.Throw<ArgumentNullException>(() => serializer.Serialize(obj, null!));
@@ -37,13 +65,18 @@ namespace Abp.RedisCache.SpanJson.Tests
         {
             // Arrange
             var serializer = new SpanJsonRedisCacheSerializer();
-            var obj = new Sample { Age = 42, Name = "John Doe", DOB = new DateTime(2000, 1, 2, 3, 4, 5, DateTimeKind.Utc) };
+            var obj = new Sample
+            {
+                Age = 42,
+                Name = "John Doe",
+                DateOfBirth = new DateTime(2000, 1, 2, 3, 4, 5, DateTimeKind.Utc)
+            };
 
             // Act
-            RedisValue rv = serializer.Serialize(obj, typeof(Sample));
+            var rv = serializer.Serialize(obj, typeof(Sample));
             rv.IsNull.ShouldBeFalse();
 
-            var s = (string)rv;
+            var s = (string?)rv;
             s.ShouldNotBeNull();
 
             // Assert: prefix and separator
@@ -64,7 +97,7 @@ namespace Abp.RedisCache.SpanJson.Tests
 
             json.ShouldContain("\"Age\"");
             json.ShouldContain("\"Name\"");
-            json.ShouldContain("\"DOB\"");
+            json.ShouldContain("\"DateOfBirth\"");
             // Minified => should not contain spaces or newlines (allow spaces inside string if any, but this is a simple check)
             json.ShouldNotContain("\n");
             json.ShouldNotContain("  ");
@@ -83,11 +116,11 @@ namespace Abp.RedisCache.SpanJson.Tests
         public void Deserialize_From_NonString_RedisValue_Delegates_To_Base_And_May_Throw()
         {
             var serializer = new SpanJsonRedisCacheSerializer();
-            RedisValue rv = (RedisValue)new byte[] { 1, 2, 3, 4 };
+            var rv = (RedisValue)new byte[] { 1, 2, 3, 4 };
 
             // Since payload does not start with our prefix, it goes to base.Deserialize
             // which will try System.Text.Json and throw for invalid JSON payloads.
-            Should.Throw<System.Text.Json.JsonException>(() => serializer.Deserialize(rv));
+            Should.Throw<JsonException>(() => serializer.Deserialize(rv));
         }
 
         [Fact]
@@ -105,10 +138,10 @@ namespace Abp.RedisCache.SpanJson.Tests
             var serializer = new SpanJsonRedisCacheSerializer();
 
             // Prepare a valid base64 of some json payload
-            var json = "{\"Age\":1,\"Name\":\"X\",\"DOB\":\"2000-01-01T00:00:00Z\"}";
+            const string json = "{\"Age\":1,\"Name\":\"X\",\"DOB\":\"2000-01-01T00:00:00Z\"}";
             var base64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(json));
 
-            var unknownTypeName = "System.ThisType.Does.Not.Exist, mscorlib";
+            const string unknownTypeName = "System.ThisType.Does.Not.Exist, mscorlib";
             var payload = $"SJ^{unknownTypeName}|{base64}";
 
             Should.Throw<ArgumentNullException>(() => serializer.Deserialize(payload));
@@ -118,7 +151,12 @@ namespace Abp.RedisCache.SpanJson.Tests
         public void Roundtrip_Supported_Type_Works()
         {
             var serializer = new SpanJsonRedisCacheSerializer();
-            var obj = new Sample { Age = 77, Name = Guid.NewGuid().ToString(), DOB = DateTime.UtcNow };            
+            var obj = new Sample
+            {
+                Age = 77,
+                Name = Guid.NewGuid().ToString(),
+                DateOfBirth = DateTime.UtcNow
+            };
 
             var rv = serializer.Serialize(obj, typeof(Sample));
             var deserialized = serializer.Deserialize(rv);
@@ -127,7 +165,37 @@ namespace Abp.RedisCache.SpanJson.Tests
             var typed = (Sample)deserialized!;
             typed.Age.ShouldBe(obj.Age);
             typed.Name.ShouldBe(obj.Name);
-            typed.DOB.ShouldBe(obj.DOB);
+            typed.DateOfBirth.ShouldBe(obj.DateOfBirth);
+        }
+
+        private class ClassToSerialize
+        {
+            [JsonConstructor(nameof(Age), nameof(Name), nameof(DateOfBirth))]
+            public ClassToSerialize(int age, string name, DateTime dateOfBirth)
+            {
+                // This constructor gets called when I'm deserializing
+                Age = age;
+                Name = name;
+                DateOfBirth = dateOfBirth;
+            }
+
+            public ClassToSerialize()
+            {
+                // This gets called when I make the object
+            }
+
+            public int Age { get; init; }
+
+            public string? Name { get; init; }
+
+            public DateTime DateOfBirth { get; init; }
+        }
+
+        private sealed class Sample
+        {
+            public int Age { get; init; }
+            public string? Name { get; init; }
+            public DateTime DateOfBirth { get; init; }
         }
     }
 }
